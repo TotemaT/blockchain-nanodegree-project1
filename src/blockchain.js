@@ -127,7 +127,7 @@ class Blockchain {
         currentTime,
         difference: currentTime - starTimestamp,
       });
-      if (currentTime - starTimestamp > 3000) {
+      if (currentTime - starTimestamp > 5 * 60) {
         return reject(
           'More than 5 minutes passed since the validation request.'
         );
@@ -136,6 +136,7 @@ class Blockchain {
       if (!bitcoinMessage.verify(message, address, signature)) {
         return reject('Invalid signature.');
       }
+
       const block = await self._addBlock(
         new BlockClass.Block({
           owner: address,
@@ -190,7 +191,7 @@ class Blockchain {
           .filter((block) => block.height > 0)
           .map((block) => block.getBData())
       );
-      resolve(data.filter((d) => d.owner === address));
+      resolve(data.filter((d) => d.owner === address).map((d) => d.star));
     });
   }
 
